@@ -1,5 +1,9 @@
 # Personal nvim config
 
+<a href="https://dotfyle.com/i-d-lytvynenko/confignvim"><img src="https://dotfyle.com/i-d-lytvynenko/confignvim/badges/plugins?style=flat" /></a>
+<a href="https://dotfyle.com/i-d-lytvynenko/confignvim"><img src="https://dotfyle.com/i-d-lytvynenko/confignvim/badges/leaderkey?style=flat" /></a>
+<a href="https://dotfyle.com/i-d-lytvynenko/confignvim"><img src="https://dotfyle.com/i-d-lytvynenko/confignvim/badges/plugin-manager?style=flat" /></a>
+
 Sensible structure, questionable features, 1000% efficiency.
 
 Enjoy c:<
