@@ -1,0 +1,16 @@
+return {
+    b = '~/AppData/Roaming/librewolf/Profiles/frp78xdg.default-default/chrome',
+    c = vim.fn.stdpath 'config',
+    d = '~/Downloads',
+    D = 'F:/Docs',
+    h = 'F:/d_z',
+    i = 'F:/IT',
+    m = '~/AppData/Roaming/musikcube',
+    n = '~/AppData/Roaming/nushell',
+    o = 'F:/orgfiles',
+    p = 'D:/projects',
+    r = 'F:/Random',
+    s = 'F:/Soft2/sioyek',
+    t = 'C:/Program Files/wezterm',
+    w = 'F:/work',
+}
