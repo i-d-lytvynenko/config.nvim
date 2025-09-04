@@ -1,3 +1,4 @@
+-- Git branch viewer
 local config = function()
     vim.g.flog_num_branch_colors = 32
     vim.g.flog_permanent_default_opts = { date = 'short', all = true }
@@ -6,7 +7,6 @@ local config = function()
     vim.keymap.set('n', 'ghh', ':Flog -raw-args=--simplify-by-decoration<CR>', { desc = 'Open git history (simple branch view)', noremap = true })
 end
 
--- Git branch viewer
 return {
     'rbong/vim-flog',
     lazy = false,

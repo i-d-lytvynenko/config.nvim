@@ -1,3 +1,4 @@
+-- Highlight, edit, and navigate code
 local config = function()
     -- Default compiler has troubles with orgmode and probably something else
     require('nvim-treesitter.install').compilers = { 'zig' }
@@ -95,7 +96,6 @@ local config = function()
     }
 end
 
--- Highlight, edit, and navigate code
 return {
     'nvim-treesitter/nvim-treesitter',
     config = config,

@@ -1,3 +1,4 @@
+-- LLMs
 local config = function()
     local gemini_provider = {
         request_completion = function(handler, params)
@@ -84,7 +85,6 @@ local config = function()
     }
 end
 
--- LLMs
 return {
     'gsuuon/model.nvim',
     cmd = { 'M', 'Model', 'Mchat' },
@@ -97,8 +97,8 @@ return {
     end,
     ft = 'mchat',
     keys = {
-        { '<A-m>', ':Mchat<CR>', mode = 'n', desc = '<Model> Open chat' },
-        { '<leader>m', ':enew | Mchat gemini<CR>', mode = 'n', silent = true, desc = '<Model> Start chat in new window' },
+        { '<A-m>', ':Mchat<CR>', mode = 'n', desc = '<Model>: Open chat' },
+        { '<leader>m', ':enew | Mchat gemini<CR>', mode = 'n', silent = true, desc = '<Model>: Start chat in new window' },
     },
     config = config,
 }

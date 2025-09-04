@@ -1,3 +1,4 @@
+-- Open markdown preview in browser window
 local config = function()
     vim.g.mkdp_page_title = 'Preview: ${name}'
     vim.g.mkdp_port = '1770'
@@ -5,7 +6,6 @@ local config = function()
     vim.g.mkdp_filetypes = { 'markdown', 'mermaid' }
 end
 
--- Open markdown preview in browser window
 return {
     'iamcco/markdown-preview.nvim',
     ft = { 'markdown', 'pandoc.markdown', 'rmd', 'mermaid' },

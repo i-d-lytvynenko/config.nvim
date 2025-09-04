@@ -1,3 +1,4 @@
+-- Fuzzy Finder (files, LSP, etc)
 local config = function()
     require('telescope').setup {
         defaults = {
@@ -62,7 +63,6 @@ local config = function()
     end, '[S]earch [K]eymaps')
 end
 
--- Fuzzy Finder (files, LSP, etc)
 return {
     'nvim-telescope/telescope.nvim',
     config = config,

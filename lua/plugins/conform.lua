@@ -1,3 +1,4 @@
+-- Fix code formating for files
 local config = function()
     local conform = require 'conform'
 
@@ -16,7 +17,6 @@ local config = function()
     end, { desc = '[F]ormat' })
 end
 
--- Fix code formating for files
 return {
     'stevearc/conform.nvim',
     config = config,

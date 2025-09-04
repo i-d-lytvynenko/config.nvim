@@ -1,3 +1,4 @@
+-- LSP Configuration & Plugins
 local config = function()
     -- This function gets run when an LSP connects to a particular buffer
     local on_attach = function(_, bufnr)
@@ -218,7 +219,6 @@ local config = function()
     -- }
 end
 
--- LSP Configuration & Plugins
 return {
     'neovim/nvim-lspconfig',
     event = 'VimEnter',

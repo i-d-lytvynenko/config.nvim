@@ -1,3 +1,4 @@
+-- Show context of cursor
 -- TreesitterContextMeta = {
 --     idle_time = 200,
 --     post_idle_time = 200,
@@ -56,7 +57,6 @@
 --     ]]
 -- end
 
--- -- Show context of cursor
 -- return {
 --     'nvim-treesitter/nvim-treesitter-context',
 --     event = 'BufReadPre',
@@ -68,7 +68,6 @@
 --     },
 -- }
 
--- Show context of cursor
 return {
     'nvim-treesitter/nvim-treesitter-context',
     event = 'BufReadPre',

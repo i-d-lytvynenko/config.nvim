@@ -1,3 +1,4 @@
+-- Change statusline
 local config = function()
     local status_ok, lualine = pcall(require, 'lualine')
     if not status_ok then
@@ -145,7 +146,6 @@ local config = function()
     }
 end
 
--- Change statusline
 return {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
