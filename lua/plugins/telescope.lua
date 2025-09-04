@@ -48,16 +48,16 @@ local config = function()
         tls.keymaps {
             show_plug = false,
             filter = function(keymap)
-                if keymap.desc ~= 'which_key_ignore' then
-                    return true
+                if keymap.desc == 'which_key_ignore' then
+                    return false
                 end
-                if #keymap.desc == 0 then
-                    return true
+                if keymap.desc == nil or #keymap.desc == 0 then
+                    return false
                 end
                 if string.match(keymap.desc, '^%d') ~= nil then
-                    return true
+                    return false
                 end
-                return false
+                return true
             end,
         }
     end, '[S]earch [K]eymaps')
