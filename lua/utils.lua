@@ -1,4 +1,27 @@
 local M = {}
+local sep = '\\'
+
+local split_path = function(path)
+    local separators = { '/', '\\', ':', '\\\\' }
+    local pattern = table.concat(separators, '')
+    local normalized_path = path:gsub('[' .. pattern .. ']', sep)
+    return vim.split(normalized_path, sep)
+end
+
+local lowercase_disk_name = function(path)
+    local firstChar = string.sub(path, 1, 1)
+    local charCode = string.byte(firstChar)
+
+    -- Check if it's an uppercase letter (A-Z)
+    if charCode >= 65 and charCode <= 90 then
+        -- Convert to lowercase by adding 32 to the ASCII value
+        local lowercaseCharCode = charCode + 32
+        local lowercaseChar = string.char(lowercaseCharCode)
+        return lowercaseChar .. string.sub(path, 2)
+    else
+        return path
+    end
+end
 
 M.shorten_filename = function(filename, opts)
     opts = opts or {}
@@ -35,11 +58,8 @@ M.shorten_file_path = function(opts)
         return path
     end
 
-    local sep = '\\'
-    local separators = { '/', '\\', ':', '\\\\' }
-    local pattern = table.concat(separators, '')
-    local normalized_path = path:gsub('[' .. pattern .. ']', sep)
-    local segments = vim.split(normalized_path, sep)
+    local segments = split_path(path)
+
     for idx = 1, #segments - 1 do
         if len <= max_length then
             break
@@ -53,6 +73,37 @@ M.shorten_file_path = function(opts)
     segments[#segments] = M.shorten_filename(segments[#segments])
 
     return table.concat(segments, sep)
+end
+
+M.get_relative_path = function(from_path, to_path)
+    from_path = lowercase_disk_name(from_path)
+    to_path = lowercase_disk_name(to_path)
+    local from_segments = split_path(from_path)
+    local to_segments = split_path(to_path)
+
+    local common_prefix_length = 0
+    for i = 1, math.min(#from_segments, #to_segments) do
+        if from_segments[i] == to_segments[i] then
+            common_prefix_length = i
+        else
+            break
+        end
+    end
+
+    local relative_segments = {}
+    local num_ups = (#from_segments - common_prefix_length - 1)
+    for _ = 1, num_ups do
+        table.insert(relative_segments, '..')
+    end
+
+    for i = common_prefix_length + 1, #to_segments do
+        table.insert(relative_segments, to_segments[i])
+    end
+
+    if #relative_segments == 0 then
+        return from_segments[#from_segments]
+    end
+    return table.concat(relative_segments, '/')
 end
 
 return M
