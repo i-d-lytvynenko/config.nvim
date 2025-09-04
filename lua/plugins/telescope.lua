@@ -11,31 +11,39 @@ local config = function()
         },
     }
 
+    local nmap = function(keys, func, desc)
+        if desc then
+            desc = '<FZF>: ' .. desc
+        end
+
+        vim.keymap.set('n', keys, func, { desc = desc })
+    end
+
     -- Enable telescope fzf native, if installed
     pcall(require('telescope').load_extension, 'fzf')
     local tls = require 'telescope.builtin'
 
     -- See `:help telescope.builtin`
-    vim.keymap.set('n', '<leader>?', tls.oldfiles, { desc = '[?] Find recently opened files' })
-    vim.keymap.set('n', '<leader><space>', tls.buffers, { desc = '[ ] Find existing buffers' })
-    vim.keymap.set('n', '<leader>/', function()
+    nmap('<leader>?', tls.oldfiles, '[?] Find recently opened files')
+    nmap('<leader><space>', tls.buffers, '[ ] Find existing buffers')
+    nmap('<leader>/', function()
         -- You can pass additional configuration to telescope to change theme, layout, etc.
         tls.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
             winblend = 10,
             previewer = false,
         })
-    end, { desc = '[/] Fuzzily search in current buffer' })
+    end, '[/] Fuzzily search in current buffer')
 
-    vim.keymap.set('n', '<leader>gf', tls.git_files, { desc = 'Search [G]it [F]iles' })
-    vim.keymap.set('n', '<leader>sf', tls.find_files, { desc = '[S]earch [F]iles' })
-    vim.keymap.set('n', '<leader>sh', tls.help_tags, { desc = '[S]earch [H]elp' })
-    vim.keymap.set('n', '<leader>sw', tls.grep_string, { desc = '[S]earch current [W]ord' })
-    vim.keymap.set('n', '<leader>sg', tls.live_grep, { desc = '[S]earch by [G]rep' })
-    vim.keymap.set('n', '<leader>sd', tls.diagnostics, { desc = '[S]earch [D]iagnostics' })
-    vim.keymap.set('n', '<leader>sr', tls.resume, { desc = '[S]earch [R]esume' })
-    vim.keymap.set('n', '<leader>sq', tls.quickfix, { desc = '[S]earch [Q]uickfix list' })
-    vim.keymap.set('n', '<leader>st', tls.treesitter, { desc = '[S]earch [T]reesitter' })
-    vim.keymap.set('n', '<leader>sk', function()
+    nmap('<leader>gf', tls.git_files, 'Search [G]it [F]iles')
+    nmap('<leader>sf', tls.find_files, '[S]earch [F]iles')
+    nmap('<leader>sh', tls.help_tags, '[S]earch [H]elp')
+    nmap('<leader>sw', tls.grep_string, '[S]earch current [W]ord')
+    nmap('<leader>sg', tls.live_grep, '[S]earch by [G]rep')
+    nmap('<leader>sd', tls.diagnostics, '[S]earch [D]iagnostics')
+    nmap('<leader>sr', tls.resume, '[S]earch [R]esume')
+    nmap('<leader>sq', tls.quickfix, '[S]earch [Q]uickfix list')
+    nmap('<leader>st', tls.treesitter, '[S]earch [T]reesitter')
+    nmap('<leader>sk', function()
         tls.keymaps {
             filter = function(keymap)
                 if keymap.desc ~= 'which_key_ignore' then
@@ -50,7 +58,7 @@ local config = function()
                 return false
             end,
         }
-    end, { desc = '[S]earch [K]eymaps' })
+    end, '[S]earch [K]eymaps')
 end
 
 -- Fuzzy Finder (files, LSP, etc)

@@ -80,13 +80,21 @@ return {
             dap.listeners.before.event_terminated['dapui_config'] = dapui.close
             dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-            vim.keymap.set('n', '<leader>db', dap.toggle_breakpoint, { noremap = true, silent = true, desc = '<DAP> Toggle breakpoint' })
-            vim.keymap.set('n', '<leader>dc', dap.continue, { noremap = true, silent = true, desc = '<DAP> [C]ontinue / Start' })
-            vim.keymap.set('n', '<leader>do', dap.step_over, { noremap = true, silent = true, desc = '<DAP> Step [O]ver' })
-            vim.keymap.set('n', '<leader>di', dap.step_into, { noremap = true, silent = true, desc = '<DAP> Step [I]nto' })
-            vim.keymap.set('n', '<leader>dO', dap.step_out, { noremap = true, silent = true, desc = '<DAP> Step [O]ut' })
-            vim.keymap.set('n', '<leader>dq', dap.terminate, { noremap = true, silent = true, desc = '<DAP> [Q]uit debugging' })
-            vim.keymap.set('n', '<leader>du', dapui.toggle, { noremap = true, silent = true, desc = '<DAP> UI toggle' })
+            local nmap = function(keys, func, desc)
+                if desc then
+                    desc = '<DAP>: ' .. desc
+                end
+
+                vim.keymap.set('n', keys, func, { noremap = true, silent = true, desc = desc })
+            end
+
+            nmap('<leader>db', dap.toggle_breakpoint, 'Toggle breakpoint')
+            nmap('<leader>dc', dap.continue, '[C]ontinue / Start')
+            nmap('<leader>do', dap.step_over, 'Step [O]ver')
+            nmap('<leader>di', dap.step_into, 'Step [I]nto')
+            nmap('<leader>dO', dap.step_out, 'Step [O]ut')
+            nmap('<leader>dq', dap.terminate, '[Q]uit debugging')
+            nmap('<leader>du', dapui.toggle, 'UI toggle')
         end,
         dependencies = {
             'nvim-neotest/nvim-nio',
