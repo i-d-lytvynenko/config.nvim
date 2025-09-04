@@ -45,6 +45,7 @@ local config = function()
     nmap('<leader>st', tls.treesitter, '[S]earch [T]reesitter')
     nmap('<leader>sk', function()
         tls.keymaps {
+            show_plug = false,
             filter = function(keymap)
                 if keymap.desc ~= 'which_key_ignore' then
                     return true
