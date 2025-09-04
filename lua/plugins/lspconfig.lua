@@ -1,7 +1,10 @@
 -- LSP Configuration & Plugins
 local config = function()
     -- This function gets run when an LSP connects to a particular buffer
-    local on_attach = function(_, bufnr)
+    local on_attach = function(client, bufnr)
+        -- Disable LSP highlighting
+        client.server_capabilities.semanticTokensProvider = nil -- false breaks pyright
+
         local nmap = function(keys, func, desc)
             if desc then
                 desc = '<LSP>: ' .. desc
@@ -130,17 +133,6 @@ local config = function()
                 filetypes = (servers[server_name] or {}).filetypes,
             }
         end,
-    }
-
-    -- Tinymist config to prevent annoying lua error
-    require('lspconfig')['tinymist'].setup {
-        capabilities = capabilities,
-        on_attach = function(client, bufnr)
-            client.server_capabilities.semanticTokensProvider = false
-            on_attach(client, bufnr)
-        end,
-        settings = servers['tinymist'],
-        filetypes = (servers['tinymist'] or {}).filetypes,
     }
 
     local util = require 'lspconfig/util'
