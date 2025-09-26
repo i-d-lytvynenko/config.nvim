@@ -94,6 +94,7 @@ return {
                 mchat = 'mchat',
             },
         }
+        vim.cmd [[cabbrev <expr> Ь	getcmdtype()==':' && getcmdline()=="Ь"	? "M"	: "Ь"]]
     end,
     ft = 'mchat',
     keys = {
