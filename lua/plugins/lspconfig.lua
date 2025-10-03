@@ -54,6 +54,7 @@ local config = function()
                 analysis = {
                     ---@diagnostic disable-next-line: param-type-mismatch
                     stubPath = vim.fs.joinpath(vim.fn.stdpath 'data', 'lazy', 'python-type-stubs', 'stubs'),
+                    diagnosticMode = 'openFilesOnly',
                 },
             },
         },
