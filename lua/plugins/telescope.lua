@@ -43,16 +43,18 @@ local config = function()
             previewer = false,
         })
     end, '[/] Fuzzily search in current buffer')
-
-    nmap('<leader>gf', tls.git_files, 'Search [G]it [F]iles')
-    nmap('<leader>sf', tls.find_files, '[S]earch [F]iles')
-    nmap('<leader>sh', tls.help_tags, '[S]earch [H]elp')
-    nmap('<leader>sw', tls.grep_string, '[S]earch current [W]ord')
-    nmap('<leader>sg', tls.live_grep, '[S]earch by [G]rep')
-    nmap('<leader>sd', tls.diagnostics, '[S]earch [D]iagnostics')
     nmap('<leader>sr', tls.resume, '[S]earch [R]esume')
-    nmap('<leader>sq', tls.quickfix, '[S]earch [Q]uickfix list')
+
+    nmap('<leader>sf', tls.find_files, '[S]earch [F]iles')
+    nmap('<leader>sg', tls.live_grep, '[S]earch by [G]rep')
+
     nmap('<leader>st', tls.treesitter, '[S]earch [T]reesitter')
+    nmap('<leader>sp', tls.lsp_document_symbols, '[S]earch LS[P] Document Symbols')
+    nmap('<leader>sd', tls.diagnostics, '[S]earch [D]iagnostics')
+
+    nmap('<leader>sq', tls.quickfix, '[S]earch [Q]uickfix list')
+    nmap('<leader>sh', tls.help_tags, '[S]earch [H]elp')
+    nmap('<leader>sc', tls.commands, '[S]earch [C]ommands')
     nmap('<leader>sk', function()
         tls.keymaps {
             show_plug = false,
