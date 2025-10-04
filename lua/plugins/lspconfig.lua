@@ -182,6 +182,16 @@ local config = function()
         filetypes = (servers['ruff'] or {}).filetypes,
     }
 
+    require('lspconfig')['basedpyright'].setup {
+        capabilities = capabilities,
+        on_attach = function(client, bufnr)
+            client.server_capabilities.semanticTokensProvider = false
+            on_attach(client, bufnr)
+        end,
+        settings = servers['basedpyright'],
+        filetypes = (servers['basedpyright'] or {}).filetypes,
+    }
+
     -- Pylsp config
     -- Also run `:PylspInstall pylsp_mypy`
     -- require('lspconfig')['pylsp'].setup {
