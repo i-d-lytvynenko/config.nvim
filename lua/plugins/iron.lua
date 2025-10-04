@@ -9,6 +9,7 @@ return {
         local view = require 'iron.view'
         local common = require 'iron.fts.common'
         local ll = require 'iron.lowlevel'
+        local visibility = require 'iron.visibility'
 
         local util = require 'lspconfig/util'
         local path = util.path
@@ -22,7 +23,7 @@ return {
             return 'ipython'
         end
 
-        -- FIX: the original code passed the dt table to chansend, which resulted in extra newlines.
+        -- INFO: the original code passed the dt table to chansend, which resulted in extra newlines.
         -- See: https://github.com/Vigemus/iron.nvim/issues/426
         ll.send_to_repl = function(meta, data)
             local dt = data
@@ -70,6 +71,7 @@ return {
 
         iron.setup {
             config = {
+                visibility = nil, -- keymaps already handle everything
                 scratch_repl = true,
                 buflisted = false,
                 repl_definition = {
@@ -115,7 +117,7 @@ return {
                     return ft
                     -- or return a string name such as the following
                     -- return 'iron'
-                    -- NOTE: this will break toggle_repl
+                    -- WARN: this will break toggle_repl
                 end,
                 dap_integration = true,
                 repl_open_cmd = view.center(0.8, 0.8),
@@ -123,28 +125,19 @@ return {
             -- Iron doesn't set keymaps by default anymore.
             -- You can set them here or manually add keymaps to the functions in iron.core
             keymaps = {
-                -- toggle_repl = '<leader>ir',
-                restart_repl = '<leader>iR',
+                --- Unused keymaps (for now): ---
 
-                send_motion = '<leader>is', -- + motion
-                visual_send = '<leader>iv',
-                send_file = '<leader>if',
-                send_line = '<leader>il',
+                -- cr = '<leader>i<cr>',
+                -- send_motion = '<leader>is', -- + motion
                 -- send_paragraph = '<leader>ip',
-                -- send_until_cursor = '<leader>iu',
 
-                send_code_block = '<leader>ib',
-                send_code_block_and_move = '<leader>in',
+                -- send_code_block = '<leader>ib',
+                -- send_code_block_and_move = '<leader>in',
 
                 -- mark_motion = '<leader>imm',
                 -- mark_visual = '<leader>imv',
                 -- remove_mark = '<leader>imd',
                 -- send_mark = '<leader>imr',
-
-                cr = '<leader>i<cr>',
-                interrupt = '<leader>ix',
-                exit = '<leader>iq',
-                clear = '<leader>ic',
             },
             -- If the highlight is on, you can change how it looks
             -- For the available options, check nvim_set_hl
@@ -154,11 +147,67 @@ return {
             ignore_blank_lines = true,
         }
 
+        -- REPL management
         vim.keymap.set('n', '<leader>ir', function()
-            vim.cmd 'IronRepl'
             if is_repl_window_open() then
+                vim.cmd 'IronHide'
+            else
                 vim.cmd 'IronFocus'
             end
-        end)
+        end, { desc = 'iron_toggle_repl' })
+        vim.keymap.set('n', '<leader>iR', function()
+            iron.repl_restart()
+            vim.cmd 'IronHide'
+        end, { desc = 'iron_restart_repl' })
+        vim.keymap.set('n', '<leader>ic', function()
+            vim.cmd 'IronHide'
+            iron.send(nil, string.char(12))
+        end, { desc = 'iron_clear' })
+        vim.keymap.set('n', '<leader>ix', function()
+            iron.send(nil, string.char(03))
+            vim.cmd 'IronFocus'
+        end, { desc = 'iron_interrupt' })
+        vim.keymap.set('n', '<leader>iq', function()
+            vim.cmd 'IronFocus'
+            iron.close_repl()
+        end, { desc = 'iron_quit' })
+
+        -- Sending selected text
+        vim.keymap.set('v', '<leader>iv', function()
+            local meta = vim.b[0].repl
+            local hide_new_repl = false
+            if not ll.repl_exists(meta) then
+                hide_new_repl = true
+            end
+            iron.visual_send()
+            if hide_new_repl then
+                vim.cmd 'IronHide'
+            end
+        end, { desc = 'iron_visual_send' })
+        vim.keymap.set('n', '<leader>il', function()
+            local meta = vim.b[0].repl
+            local hide_new_repl = false
+            if not ll.repl_exists(meta) then
+                hide_new_repl = true
+            end
+            iron.send_line()
+            if hide_new_repl then
+                vim.cmd 'IronHide'
+            end
+        end, { desc = 'iron_send_line' })
+
+        -- Sending chunks of files
+        -- These functions require special treatment, because they internally rely on the active buffer,
+        -- and you don't want to send the REPL history instead of your code by mistake
+        vim.keymap.set('n', '<leader>if', function()
+            vim.cmd 'IronHide'
+            iron.send_file()
+            vim.cmd 'IronFocus'
+        end, { desc = 'iron_send_file' })
+        vim.keymap.set('n', '<leader>iu', function()
+            vim.cmd 'IronHide'
+            iron.send_until_cursor()
+            vim.cmd 'IronFocus'
+        end, { desc = 'iron_send_until_cursor' })
     end,
 }
