@@ -139,9 +139,9 @@ return {
                 -- send_mark = '<leader>imr',
             },
             -- If the highlight is on, you can change how it looks
-            -- For the available options, check nvim_set_hl
+            -- For the available options, check https://neovim.io/doc/user/api.html#nvim_set_hl()
             highlight = {
-                italic = true,
+                link = 'Search',
             },
             ignore_blank_lines = true,
         }
