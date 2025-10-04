@@ -22,6 +22,34 @@ return {
             return 'ipython'
         end
 
+        -- FIX: the original code passed the dt table to chansend, which resulted in extra newlines.
+        -- See: https://github.com/Vigemus/iron.nvim/issues/426
+        ll.send_to_repl = function(meta, data)
+            local dt = data
+
+            if data == string.char(12) then
+                vim.fn.chansend(meta.job, { string.char(12) })
+                return
+            end
+
+            if type(data) == 'string' then
+                dt = vim.split(data, '\n')
+            end
+
+            dt = require('iron.fts.common').format(meta.repldef, dt)
+
+            local window = vim.fn.bufwinid(meta.bufnr)
+            if window ~= -1 then
+                vim.api.nvim_win_set_cursor(window, { vim.api.nvim_buf_line_count(meta.bufnr), 0 })
+            end
+
+            vim.fn.chansend(meta.job, table.concat(dt, '\n'))
+
+            if window ~= -1 then
+                vim.api.nvim_win_set_cursor(window, { vim.api.nvim_buf_line_count(meta.bufnr), 0 })
+            end
+        end
+
         local is_repl_window_open = function(ft)
             ft = ft or vim.bo.filetype
             if ft == nil or ft == '' then
@@ -53,13 +81,30 @@ return {
                             return { ipython, '--no-autoindent' }
                         end,
                         format = function(lines, extras)
-                            -- result = common.bracketed_paste(lines, extras) -- everything selected is one cell
+                            -- local result = common.bracketed_paste(lines, extras) -- everything selected is one cell
                             local result = common.bracketed_paste_python(lines, extras) -- cell per line
 
-                            -- Remove lines that only contain a comment
-                            local filtered = vim.tbl_filter(function(line)
-                                return not string.match(line, '^%s*#')
-                            end, result)
+                            local filtered = {}
+                            for _, line in ipairs(result) do
+                                -- Trim trailing whitespace and carriage returns
+                                local trimmed_line = string.gsub(line, '^(.-)%s*$', '%1')
+                                trimmed_line = string.gsub(trimmed_line, '\r$', '')
+
+                                -- Skip lines that are now empty after trimming
+                                if trimmed_line == '' then
+                                    goto continue
+                                end
+
+                                -- Skip lines that only contain a comment
+                                if string.match(trimmed_line, '^%s*#') then
+                                    goto continue
+                                end
+
+                                table.insert(filtered, trimmed_line)
+
+                                ::continue::
+                            end
+                            table.insert(filtered, '\n')
                             return filtered
                         end,
                         block_dividers = { '# %%', '#%%' },
@@ -69,7 +114,7 @@ return {
                 repl_filetype = function(_, ft)
                     return ft
                     -- or return a string name such as the following
-                    -- return "iron"
+                    -- return 'iron'
                     -- NOTE: this will break toggle_repl
                 end,
                 dap_integration = true,
