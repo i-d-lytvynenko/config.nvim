@@ -9,7 +9,6 @@ return {
         local view = require 'iron.view'
         local common = require 'iron.fts.common'
         local ll = require 'iron.lowlevel'
-        local visibility = require 'iron.visibility'
 
         local util = require 'lspconfig/util'
         local path = util.path
