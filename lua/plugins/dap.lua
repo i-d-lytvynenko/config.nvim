@@ -2,7 +2,6 @@
 return {
     {
         'mfussenegger/nvim-dap',
-        tag = '0.10.0',
         config = function()
             local dap = require 'dap'
             local dapui = require 'dapui'
