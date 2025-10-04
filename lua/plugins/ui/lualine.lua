@@ -31,6 +31,7 @@ local config = function()
                         NvimTree = 'NvimTree',
                         Term = 'Term',
                         oil = 'Oil',
+                        iron = 'REPL',
                     }, -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
                     use_mode_colors = true,
                     symbols = {
