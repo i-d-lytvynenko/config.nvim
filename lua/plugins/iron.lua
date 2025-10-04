@@ -47,8 +47,8 @@ return {
                 repl_definition = {
                     python = {
                         command = function(_)
-                            -- TODO: find root directory (contains requirements.txt, .git or pyproject.toml)
-                            local root_dir = vim.fn.getcwd()
+                            local root_patterns = { '.git', 'pyproject.toml', 'requirements.txt', 'setup.py' }
+                            local root_dir = vim.fs.root(vim.fn.getcwd(), root_patterns)
                             local ipython = get_ipython_path(root_dir)
                             return { ipython, '--no-autoindent' }
                         end,
