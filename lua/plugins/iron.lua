@@ -8,8 +8,7 @@ return {
         local iron = require 'iron.core'
         local view = require 'iron.view'
         local common = require 'iron.fts.common'
-        -- local ll = require 'iron.lowlevel'
-        local visibility = require 'iron.visibility'
+        local ll = require 'iron.lowlevel'
 
         local util = require 'lspconfig/util'
         local path = util.path
@@ -23,22 +22,28 @@ return {
             return 'ipython'
         end
 
+        local is_repl_window_open = function(ft)
+            ft = ft or vim.bo.filetype
+            if ft == nil or ft == '' then
+                return false
+            end
+
+            local meta = ll.get(ft)
+            if not ll.repl_exists(meta) then
+                return false
+            end
+
+            local winid = vim.fn.bufwinid(meta.bufnr)
+            if winid ~= -1 then
+                return true
+            end
+            return false
+        end
+
         iron.setup {
             config = {
                 scratch_repl = true,
-                -- Triggers when the window is already open
-                -- visibility = visibility.focus,
-                -- visibility = function(bufid, showfn)
-                --     -- Using `single` is a workaround to access the state of repl window
-                --     local window, was_hidden = visibility.single(bufid, showfn)
-                --     -- vim.api.nvim_set_current_win(window)
-                --     print(window, was_hidden)
-                --     -- if was_hidden then
-                --     -- else
-                --     --     vim.api.nvim_win_hide(window)
-                --     -- end
-                -- end,
-                buflisted = true,
+                buflisted = false,
                 repl_definition = {
                     python = {
                         command = function(_)
@@ -61,11 +66,11 @@ return {
                         env = { PYTHON_BASIC_REPL = '1' }, --this is needed for python3.13 and up.
                     },
                 },
-                -- set the file type of the newly created repl to ft
-                -- bufnr is the buffer id of the REPL and ft is the filetype of the
-                -- language being used for the REPL.
-                repl_filetype = function()
-                    return 'iron'
+                repl_filetype = function(_, ft)
+                    return ft
+                    -- or return a string name such as the following
+                    -- return "iron"
+                    -- NOTE: this will break toggle_repl
                 end,
                 dap_integration = true,
                 repl_open_cmd = view.center(0.8, 0.8),
@@ -101,9 +106,14 @@ return {
             highlight = {
                 italic = true,
             },
-            ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
+            ignore_blank_lines = true,
         }
 
-        vim.keymap.set('n', '<leader>ir', '<cmd>IronReplHere<cr>i')
+        vim.keymap.set('n', '<leader>ir', function()
+            vim.cmd 'IronRepl'
+            if is_repl_window_open() then
+                vim.cmd 'IronFocus'
+            end
+        end)
     end,
 }
