@@ -31,4 +31,8 @@ require('lazy').setup {
         path = 'F:/IT/nvim_plugins',
         fallback = false, -- Fallback to git when local plugin doesn't exist
     },
+    rocks = {
+        hererocks = false,
+        enabled = false,
+    },
 }

@@ -2,6 +2,7 @@
 return {
     {
         'mfussenegger/nvim-dap',
+        tag = '0.10.0',
         config = function()
             local dap = require 'dap'
             local dapui = require 'dapui'
@@ -99,7 +100,8 @@ return {
         dependencies = {
             'nvim-neotest/nvim-nio',
             'rcarriga/nvim-dap-ui',
-            'mfussenegger/nvim-dap-python',
+            -- Later versions fail to build due to `debugpy-adapter` and hererocks
+            { 'mfussenegger/nvim-dap-python', commit = '34282820bb713b9a5fdb120ae8dd85c2b3f49b51' },
             'theHamsta/nvim-dap-virtual-text',
             'mason-org/mason.nvim',
             'jay-babu/mason-nvim-dap.nvim',
