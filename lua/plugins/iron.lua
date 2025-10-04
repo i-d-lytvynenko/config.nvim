@@ -167,7 +167,8 @@ return {
             vim.cmd 'IronFocus'
         end, { desc = 'iron_interrupt' })
         vim.keymap.set('n', '<leader>iq', function()
-            vim.cmd 'IronFocus'
+            -- Return if your ipython config has `c.TerminalInteractiveShell.confirm_exit = True`
+            -- vim.cmd 'IronFocus'
             iron.close_repl()
         end, { desc = 'iron_quit' })
 
