@@ -1,4 +1,4 @@
--- Python REPL
+-- REPL support
 -- Use https://github.com/g0t4/dotfiles/blob/master/.config/nvim/lua/plugins/terminals.lua for reference
 return {
     'Vigemus/iron.nvim',
@@ -66,6 +66,24 @@ return {
                 return true
             end
             return false
+        end
+
+        local search_hl = vim.api.nvim_get_hl(0, {name = 'Search'})
+        local darken_color = function(color_num, percentage)
+            local function darken_component(comp)
+                local new_comp = math.floor(comp * (1 - percentage))
+                return math.max(0, math.min(255, new_comp))
+            end
+            local r = bit.rshift(color_num, 16) -- Red
+            local g = bit.band(bit.rshift(color_num, 8), 0xFF) -- Green
+            local b = bit.band(color_num, 0xFF) -- Blue
+
+            local new_r = darken_component(r)
+            local new_g = darken_component(g)
+            local new_b = darken_component(b)
+
+            local new_color_num = bit.bor(bit.lshift(new_r, 16), bit.lshift(new_g, 8), new_b)
+            return new_color_num
         end
 
         iron.setup {
@@ -141,7 +159,7 @@ return {
             -- If the highlight is on, you can change how it looks
             -- For the available options, check https://neovim.io/doc/user/api.html#nvim_set_hl()
             highlight = {
-                link = 'Search',
+                bg = darken_color(search_hl.bg, 0.5),
             },
             ignore_blank_lines = true,
         }
