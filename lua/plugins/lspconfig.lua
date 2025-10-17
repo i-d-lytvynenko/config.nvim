@@ -3,7 +3,8 @@ local config = function()
     -- This function gets run when an LSP connects to a particular buffer
     local on_attach = function(client, bufnr)
         -- Disable LSP highlighting
-        client.server_capabilities.semanticTokensProvider = nil -- false breaks pyright
+        -- WARN: nil breaks pyright
+        client.server_capabilities.semanticTokensProvider = nil
 
         local nmap = function(keys, func, desc)
             if desc then
