@@ -1,5 +1,7 @@
 -- LLMs
 local config = function()
+    local system_prompt = 'Be as to the point as possible unless the user tells you otherwise.\n'
+        .. 'If asked for code, leave only absolutely necessary comments in code blocks.\n'
     local gemini_provider = {
         request_completion = function(handler, params)
             -- Disable reasoning to make the stream faster
@@ -49,6 +51,7 @@ local config = function()
         create = function(input, context)
             return context.selection and input or ''
         end,
+        system = system_prompt,
         run = function(messages, config)
             local formattedParts = {}
 
@@ -74,7 +77,7 @@ local config = function()
         default_prompt = {
             provider = gemini_provider,
             builder = function(input)
-                return { contents = { { parts = { { text = input } } } } }
+                return { contents = { { parts = { { text = system_prompt .. input } } } } }
             end,
             mode = require('model').mode.APPEND,
         },
