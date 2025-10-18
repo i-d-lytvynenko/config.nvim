@@ -1,11 +1,14 @@
 -- LSP Configuration & Plugins
 local config = function()
+    local on_init = function(client)
+        if client.server_capabilities then
+            -- Disable LSP highlighting
+            -- WARN: nil breaks pyright
+            client.server_capabilities.semanticTokensProvider = nil
+        end
+    end
     -- This function gets run when an LSP connects to a particular buffer
     local on_attach = function(client, bufnr)
-        -- Disable LSP highlighting
-        -- WARN: nil breaks pyright
-        client.server_capabilities.semanticTokensProvider = nil
-
         local nmap = function(keys, func, desc)
             if desc then
                 desc = '<LSP>: ' .. desc
@@ -130,6 +133,7 @@ local config = function()
         function(server_name)
             require('lspconfig')[server_name].setup {
                 capabilities = capabilities,
+                on_init = on_init,
                 on_attach = on_attach,
                 settings = servers[server_name],
                 filetypes = (servers[server_name] or {}).filetypes,
@@ -162,9 +166,10 @@ local config = function()
         capabilities = capabilities,
         on_init = function(client)
             client.config.interpreter = get_python_path(client.config.root_dir)
+            client.server_capabilities.hoverProvider = false
+            on_init(client)
         end,
         on_attach = function(client, bufnr)
-            client.server_capabilities.hoverProvider = false
             on_attach(client, bufnr)
 
             -- Ruff import sorting is performed separately from formatting (fix waiting room)
@@ -185,10 +190,11 @@ local config = function()
 
     require('lspconfig')['basedpyright'].setup {
         capabilities = capabilities,
-        on_attach = function(client, bufnr)
+        on_init = function(client)
             client.server_capabilities.semanticTokensProvider = false
-            on_attach(client, bufnr)
+            on_init(client)
         end,
+        on_attach = on_attach,
         settings = servers['basedpyright'],
         filetypes = (servers['basedpyright'] or {}).filetypes,
     }
