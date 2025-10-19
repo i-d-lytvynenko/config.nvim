@@ -157,3 +157,17 @@ vim.cmd [[
 ]]
 
 vim.diagnostic.config { virtual_text = true, virtual_lines = false }
+
+-- Nvim leaves a bunch of empty shada files on Windows
+-- Fix waiting room: https://github.com/neovim/neovim/issues/8587
+if vim.fn.has 'win32' == 1 then
+    vim.api.nvim_create_autocmd('VimLeavePre', {
+        callback = function()
+            local shada_dir = vim.fn.stdpath 'data' .. '\\shada'
+            local pattern = shada_dir .. '\\main.shada.tmp.*'
+            for _, file in ipairs(vim.fn.glob(pattern, false, true)) do
+                os.remove(file)
+            end
+        end,
+    })
+end
