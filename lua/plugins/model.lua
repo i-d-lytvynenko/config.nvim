@@ -4,8 +4,8 @@ local config = function()
         .. 'If asked for code, leave only absolutely necessary comments in code blocks.\n'
     local gemini_provider = {
         request_completion = function(handler, params)
-            -- Disable reasoning to make the stream faster
-            params['generationConfig'] = { thinkingConfig = { thinkingBudget = 0 } }
+            -- To disable reasoning and make the stream faster, uncomment this line:
+            -- params['generationConfig'] = { thinkingConfig = { thinkingBudget = 0 } }
             local util = require 'model.util'
             local sse = require 'model.util.sse'
             return sse.curl_client({
