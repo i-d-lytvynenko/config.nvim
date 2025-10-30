@@ -21,23 +21,26 @@ local config = function()
             }, {
                 on_message = function(msg, raw)
                     local item = util.json.decode(msg.data)
-                    if item and item.candidates then
-                        if item.candidates[1].content then
-                            local text_parts = item.candidates[1].content.parts
-                            for _, part in ipairs(text_parts) do
-                                handler.on_partial(part.text)
-                            end
-                        else
-                            handler.on_error(item)
-                        end
-                    else
+                    if not (item and item.candidates) then
                         local err_response = util.json.decode(raw)
-
                         if err_response then
                             handler.on_error(err_response)
                         else
                             handler.on_error 'Unrecognized SSE response'
                         end
+                        return
+                    end
+                    if not item.candidates[1].content then
+                        handler.on_error(item)
+                        return
+                    end
+                    local text_parts = item.candidates[1].content.parts
+                    if not text_parts then
+                        handler.on_error(item)
+                        return
+                    end
+                    for _, part in ipairs(text_parts) do
+                        handler.on_partial(part.text)
                     end
                 end,
                 on_error = handler.on_error,
