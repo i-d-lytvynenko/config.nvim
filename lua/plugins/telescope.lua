@@ -18,6 +18,12 @@ local config = function()
                     return require('utils').get_relative_path(opts.curr_filepath, path)
                 end,
             },
+            diagnostics = {
+                entry_maker = function(entry)
+                    entry.filename = require('utils').get_relative_path(vim.fn.getcwd(), entry.filename)
+                    return require('telescope.make_entry').gen_from_diagnostics()(entry)
+                end,
+            },
         },
     }
 
