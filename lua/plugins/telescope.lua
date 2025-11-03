@@ -15,7 +15,7 @@ local config = function()
                 -- Telescope can't show relative paths with LSP symbols
                 -- See https://github.com/nvim-telescope/telescope.nvim/issues/2906
                 path_display = function(opts, path)
-                    return require('utils').get_relative_path(opts.curr_filepath, path)
+                    return require('utils').get_relative_path(vim.fn.getcwd(), path)
                 end,
             },
             diagnostics = {
