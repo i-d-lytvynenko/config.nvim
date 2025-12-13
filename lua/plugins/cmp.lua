@@ -22,12 +22,12 @@ local config = function()
             -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
             ['<CR>'] = cmp.mapping.confirm { select = true },
         },
-        sources = cmp.config.sources({
-            { name = 'nvim_lsp' },
-            { name = 'luasnip' },
-        }, {
-            { name = 'buffer' },
-        }),
+        sources = cmp.config.sources {
+            { name = 'nvim_lsp', priority = 1000 },
+            { name = 'luasnip', priority = 750 },
+            { name = 'buffer', priority = 500 },
+            { name = 'path', priority = 250 },
+        },
     }
 
     cmp.setup.filetype('gitcommit', {
