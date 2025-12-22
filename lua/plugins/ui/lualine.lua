@@ -74,6 +74,13 @@ local config = function()
             },
             lualine_y = {
                 {
+                    function(opts)
+                        opts = opts or {}
+                        local path_sep = package.config:sub(1, 1)
+                        local from_path = vim.fn.getcwd() .. path_sep
+                        local to_path = vim.F.if_nil(opts.path, vim.fn.expand '%:p')
+                        return utils.get_relative_path(from_path, to_path)
+                    end,
                     utils.shorten_file_path,
                     padding = { left = 2, right = 2 },
                     cond = function()
