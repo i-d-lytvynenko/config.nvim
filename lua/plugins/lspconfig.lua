@@ -53,6 +53,7 @@ local config = function()
         clangd = {},
         html = { filetypes = { 'html', 'twig', 'hbs' } },
         cssls = {},
+        markdown_oxide = {},
         basedpyright = {
             basedpyright = {
                 analysis = {

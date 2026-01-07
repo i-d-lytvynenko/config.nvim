@@ -5,6 +5,7 @@ return {
     D = 'F:/Docs',
     h = 'F:/d_z',
     i = 'F:/IT',
+    l = 'F:/logseq',
     m = '~/AppData/Roaming/musikcube',
     n = '~/AppData/Roaming/nushell',
     o = 'F:/orgfiles',
