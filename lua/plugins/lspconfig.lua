@@ -53,7 +53,7 @@ local config = function()
         clangd = {},
         html = { filetypes = { 'html', 'twig', 'hbs' } },
         cssls = {},
-        markdown_oxide = {},
+        marksman = {},
         basedpyright = {
             basedpyright = {
                 analysis = {
@@ -140,6 +140,15 @@ local config = function()
                 filetypes = (servers[server_name] or {}).filetypes,
             }
         end,
+    }
+
+    require('lspconfig')['marksman'].setup {
+        cmd = { 'marksman', 'server' },
+        filetypes = { 'markdown', 'markdown.mdx' },
+        root_markers = { '.marksman.toml', '.git' },
+        capabilities = capabilities,
+        on_init = on_init,
+        on_attach = on_attach,
     }
 
     local util = require 'lspconfig/util'
