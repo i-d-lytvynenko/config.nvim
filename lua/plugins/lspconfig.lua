@@ -67,6 +67,8 @@ local config = function()
         intelephense = {},
         lua_ls = {
             Lua = {
+                codeLens = { enable = true },
+                hint = { enable = true, semicolon = 'Disable' },
                 runtime = {
                     version = 'LuaJIT',
                 },
@@ -93,55 +95,35 @@ local config = function()
         capabilities = cmp.default_capabilities(capabilities)
     end
 
-    local mason_lspconfig = require 'mason-lspconfig'
-    local ensure = vim.tbl_filter(function(name)
-        return vim.fn.executable(name) ~= 1
-    end, vim.tbl_keys(servers))
+    for server_name, server_settings in pairs(servers) do
+        vim.lsp.config(server_name, {
+            capabilities = capabilities,
+            on_init = on_init,
+            on_attach = on_attach,
+            settings = server_settings,
+            filetypes = (server_settings or {}).filetypes,
+        })
+    end
 
-    mason_lspconfig.setup {
-        ensure_installed = ensure,
-        automatic_installation = {
-            exclude = {
-                'basedpyright',
-                'ruff',
-            },
-        },
-    }
-
-    mason_lspconfig.setup_handlers {
-        function(server_name)
-            require('lspconfig')[server_name].setup {
-                capabilities = capabilities,
-                on_init = on_init,
-                on_attach = on_attach,
-                settings = servers[server_name],
-                filetypes = (servers[server_name] or {}).filetypes,
-            }
-        end,
-    }
-
-    require('lspconfig')['marksman'].setup {
-        cmd = { 'marksman', 'server' },
+    vim.lsp.config('marksman', {
         filetypes = { 'markdown', 'markdown.mdx' },
         root_markers = { '.marksman.toml', '.git' },
         capabilities = capabilities,
         on_init = on_init,
         on_attach = on_attach,
-    }
+    })
 
-    local util = require 'lspconfig/util'
-    local path = util.path
     local function get_python_path(workspace)
         for _, pattern in ipairs { '*', '.*' } do
-            local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+            local match = vim.fn.glob(table.concat({ workspace, pattern, 'pyvenv.cfg' }, '/'))
             if match ~= '' then
-                return path.join(path.dirname(match), 'Scripts', 'python.exe')
+                return table.concat({ vim.fs.dirname(match), 'Scripts', 'python.exe' }, '/')
             end
         end
         return 'python'
     end
 
-    require('lspconfig')['ruff'].setup {
+    vim.lsp.config('ruff', {
         init_options = {
             settings = {
                 -- For more settings check https://github.com/astral-sh/ruff/blob/main/docs/editors/settings.md
@@ -173,9 +155,9 @@ local config = function()
         end,
         settings = servers['ruff'],
         filetypes = (servers['ruff'] or {}).filetypes,
-    }
+    })
 
-    require('lspconfig')['basedpyright'].setup {
+    vim.lsp.config('basedpyright', {
         capabilities = capabilities,
         on_init = function(client)
             client.server_capabilities.semanticTokensProvider = false
@@ -184,7 +166,22 @@ local config = function()
         on_attach = on_attach,
         settings = servers['basedpyright'],
         filetypes = (servers['basedpyright'] or {}).filetypes,
+    })
+
+    local mason_lspconfig = require 'mason-lspconfig'
+    local ensure = {}
+    for _, name in ipairs(vim.tbl_keys(servers)) do
+        if vim.fn.executable(name) ~= 1 then
+            table.insert(ensure, name)
+        else
+            vim.lsp.enable(name)
+        end
+    end
+    mason_lspconfig.setup {
+        automatic_enable = true,
+        ensure_installed = ensure,
     }
+
 end
 
 return {
@@ -193,8 +190,8 @@ return {
     config = config,
     dependencies = {
         -- Automatically install LSPs to stdpath for neovim
-        { 'williamboman/mason.nvim', config = true },
-        { 'williamboman/mason-lspconfig.nvim', version = 'v1.32.0' }, -- TODO: refactor config to use new versions
+        { 'mason-org/mason.nvim', config = true },
+        { 'mason-org/mason-lspconfig.nvim' },
 
         -- Useful status updates for LSP
         { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },

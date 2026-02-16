@@ -10,13 +10,11 @@ return {
         local common = require 'iron.fts.common'
         local ll = require 'iron.lowlevel'
 
-        local util = require 'lspconfig/util'
-        local path = util.path
         local function get_ipython_path(workspace)
             for _, pattern in ipairs { '*', '.*' } do
-                local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+                local match = vim.fn.glob(table.concat({ workspace, pattern, 'pyvenv.cfg' }, '/'))
                 if match ~= '' then
-                    return path.join(path.dirname(match), 'Scripts', 'ipython.exe')
+                    return table.concat({ vim.fs.dirname(match), 'Scripts', 'ipython.exe' }, '/')
                 end
             end
             return 'ipython'
