@@ -1,2 +1,3 @@
 session/
 lua/plugins/disabled/
+lua/configs/bookmarks.lua
