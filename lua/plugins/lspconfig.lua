@@ -63,39 +63,7 @@ local config = function()
                 },
             },
         },
-        -- pyright = {
-        --     pyright = {
-        --         disableOrganizeImports = true,
-        --     },
-        --     python = {
-        --         analysis = {
-        --             ignore = { '*' },
-        --             diagnosticMode = 'openFilesOnly',
-        --             useLibraryCodeForTypes = true,
-        --             -- useLibraryCodeForTypes = false,
-        --             stubPath = vim.fn.stdpath 'data' .. '/lazy/python-type-stubs/stubs',
-        --         },
-        --     },
-        -- },
         ruff = {},
-        -- pylsp = {
-        --     pylsp = {
-        --         plugins = {
-        --             -- 25.02.25 this just sucks
-        --             pylsp_mypy = { enabled = false },
-
-        --             -- ruff is better
-        --             flake8 = { enabled = false },
-        --             pycodestyle = { enabled = false },
-        --             autopep8 = { enabled = false },
-        --             yapf = { enabled = false },
-        --             mccabe = { enabled = false },
-        --             pyflakes = { enabled = false },
-        --             black = { enabled = false },
-        --             pylsp_isort = { enabled = false },
-        --         },
-        --     },
-        -- },
         intelephense = {},
         lua_ls = {
             Lua = {
@@ -126,10 +94,20 @@ local config = function()
     end
 
     local mason_lspconfig = require 'mason-lspconfig'
+    local ensure = vim.tbl_filter(function(name)
+        return vim.fn.executable(name) ~= 1
+    end, vim.tbl_keys(servers))
+
     mason_lspconfig.setup {
-        ensure_installed = vim.tbl_keys(servers),
-        automatic_installation = true,
+        ensure_installed = ensure,
+        automatic_installation = {
+            exclude = {
+                'basedpyright',
+                'ruff',
+            },
+        },
     }
+
     mason_lspconfig.setup_handlers {
         function(server_name)
             require('lspconfig')[server_name].setup {
@@ -163,7 +141,6 @@ local config = function()
         return 'python'
     end
 
-    -- Ruff config
     require('lspconfig')['ruff'].setup {
         init_options = {
             settings = {
@@ -208,35 +185,6 @@ local config = function()
         settings = servers['basedpyright'],
         filetypes = (servers['basedpyright'] or {}).filetypes,
     }
-
-    -- Pylsp config
-    -- Also run `:PylspInstall pylsp_mypy`
-    -- require('lspconfig')['pylsp'].setup {
-    --     capabilities = capabilities,
-    --     on_init = function(client)
-    --         local python_venv = get_python_path(client.config.root_dir)
-    --         local settings = vim.tbl_deep_extend('force', (client.settings or client.config.settings), {
-    --             pylsp = {
-    --                 plugins = {
-    --                     jedi = {
-    --                         environment = python_venv,
-    --                     },
-    --                     -- pylsp_mypy = {
-    --                     --     overrides = { '--python-executable', python_venv, true },
-    --                     --     report_progress = true,
-    --                     --     live_mode = false,
-    --                     --     dmypy = true,
-    --                     --     exclude = { '\\.venv/*' },
-    --                     -- },
-    --                 },
-    --             },
-    --         })
-    --         client.notify('workspace/didChangeConfiguration', { settings = settings })
-    --     end,
-    --     on_attach = on_attach,
-    --     settings = servers['pylsp'],
-    --     filetypes = (servers['pylsp'] or {}).filetypes,
-    -- }
 end
 
 return {
