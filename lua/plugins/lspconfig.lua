@@ -46,13 +46,14 @@ local config = function()
     end
 
     local servers = {
-        ts_ls = {},
-        gopls = {
-            gofumpt = true,
-        },
-        clangd = {},
-        html = { filetypes = { 'html', 'twig', 'hbs' } },
-        cssls = {},
+        -- ts_ls = {},
+        -- gopls = {
+        --     gofumpt = true,
+        -- },
+        -- clangd = {},
+        -- html = { filetypes = { 'html', 'twig', 'hbs' } },
+        -- cssls = {},
+        -- intelephense = {},
         marksman = {},
         basedpyright = {
             basedpyright = {
@@ -64,7 +65,6 @@ local config = function()
             },
         },
         ruff = {},
-        intelephense = {},
         lua_ls = {
             Lua = {
                 codeLens = { enable = true },
