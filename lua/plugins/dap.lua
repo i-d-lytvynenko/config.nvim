@@ -1,4 +1,5 @@
 -- Debugger support
+local is_immutable_os = vim.fn.isdirectory('/gnu/store') == 1 or vim.fn.isdirectory('/nix/store') == 1
 return {
     {
         'mfussenegger/nvim-dap',
@@ -7,19 +8,22 @@ return {
             local dapui = require 'dapui'
             local dap_python = require 'dap-python'
 
-            require('mason-nvim-dap').setup {
-                -- Makes a best effort to setup the various debuggers with
-                -- reasonable debug configurations
-                automatic_installation = true,
+            local mason_dap_status_ok, mason_dap = pcall(require, 'mason-nvim-dap')
+            if mason_dap_status_ok then
+                mason_dap.setup {
+                    -- Makes a best effort to setup the various debuggers with
+                    -- reasonable debug configurations
+                    automatic_installation = true,
 
-                -- You can provide additional configuration to the handlers,
-                -- see mason-nvim-dap README for more information
-                handlers = {},
+                    -- You can provide additional configuration to the handlers,
+                    -- see mason-nvim-dap README for more information
+                    handlers = {},
 
-                ensure_installed = {
-                    'python',
-                },
-            }
+                    ensure_installed = {
+                        'python',
+                    },
+                }
+            end
 
             -- Still doesn't fix useless notifications
             -- See https://github.com/mfussenegger/nvim-dap/issues/1547
@@ -30,8 +34,14 @@ return {
                 commented = true, -- Show virtual text alongside comment
             }
 
-            local python = vim.fn.expand(vim.fn.stdpath 'data' .. '/mason/packages/debugpy/venv/Scripts/pythonw')
-            dap_python.setup(python)
+
+            local python_path
+            if vim.fn.has('win32') == 1 then
+                python_path = vim.fn.expand(vim.fn.stdpath 'data' .. '/mason/packages/debugpy/venv/Scripts/pythonw')
+            else
+                python_path = 'python'
+            end
+            dap_python.setup(python_path)
 
             dap.configurations.python = {
                 {
@@ -102,8 +112,9 @@ return {
             -- Later versions fail to build due to `debugpy-adapter` and hererocks
             { 'mfussenegger/nvim-dap-python', commit = '34282820bb713b9a5fdb120ae8dd85c2b3f49b51' },
             'theHamsta/nvim-dap-virtual-text',
-            'mason-org/mason.nvim',
-            'jay-babu/mason-nvim-dap.nvim',
+            { 'mason-org/mason.nvim',         enabled = not is_immutable_os },
+            { 'jay-babu/mason-nvim-dap.nvim', enabled = not is_immutable_os },
         },
+        enabled = false,  -- disable for now
     },
 }
