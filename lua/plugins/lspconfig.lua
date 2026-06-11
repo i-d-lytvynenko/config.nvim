@@ -1,4 +1,10 @@
 -- LSP Configuration & Plugins
+local is_immutable_os = vim.fn.isdirectory('/gnu/store') == 1 or vim.fn.isdirectory('/nix/store') == 1
+
+if vim.fn.has('win32') == 0 then
+    vim.env.PATH = vim.fn.expand("~/.local/bin") .. ":" .. vim.env.PATH
+end
+
 local config = function()
     local on_init = function(client)
         if client.server_capabilities then
@@ -114,10 +120,11 @@ local config = function()
     })
 
     local function get_python_path(workspace)
+        local venv_python = vim.fn.has('win32') == 1 and 'Scripts/python.exe' or 'bin/python'
         for _, pattern in ipairs { '*', '.*' } do
             local match = vim.fn.glob(table.concat({ workspace, pattern, 'pyvenv.cfg' }, '/'))
             if match ~= '' then
-                return table.concat({ vim.fs.dirname(match), 'Scripts', 'python.exe' }, '/')
+                return table.concat({ vim.fs.dirname(match), venv_python }, '/')
             end
         end
         return 'python'
@@ -134,7 +141,13 @@ local config = function()
         },
         capabilities = capabilities,
         on_init = function(client)
-            client.config.interpreter = get_python_path(client.config.root_dir)
+            local root = client.config.root_dir
+
+            if root then
+                client.config.interpreter = get_python_path(root)
+            else
+                client.config.interpreter = "python"
+            end
             client.server_capabilities.hoverProvider = false
             on_init(client)
         end,
@@ -168,20 +181,28 @@ local config = function()
         filetypes = (servers['basedpyright'] or {}).filetypes,
     })
 
-    local mason_lspconfig = require 'mason-lspconfig'
-    local ensure = {}
+    -- Conditionally run Mason logic
+    if not is_immutable_os then
+        local mason_status_ok, mason_lspconfig = pcall(require, 'mason-lspconfig')
+        if mason_status_ok then
+            local ensure = {}
+            for _, name in ipairs(vim.tbl_keys(servers)) do
+                if vim.fn.executable(name) ~= 1 then
+                    table.insert(ensure, name)
+                end
+            end
+            mason_lspconfig.setup {
+                automatic_enable = true,
+                ensure_installed = ensure,
+            }
+        end
+    end
+
     for _, name in ipairs(vim.tbl_keys(servers)) do
-        if vim.fn.executable(name) ~= 1 then
-            table.insert(ensure, name)
-        else
+        if is_immutable_os or vim.fn.executable(name) == 1 then
             vim.lsp.enable(name)
         end
     end
-    mason_lspconfig.setup {
-        automatic_enable = true,
-        ensure_installed = ensure,
-    }
-
 end
 
 return {
@@ -190,16 +211,16 @@ return {
     config = config,
     dependencies = {
         -- Automatically install LSPs to stdpath for neovim
-        { 'mason-org/mason.nvim', config = true },
-        { 'mason-org/mason-lspconfig.nvim' },
+        { 'mason-org/mason.nvim',           config = true,                enabled = not is_immutable_os },
+        { 'mason-org/mason-lspconfig.nvim', enabled = not is_immutable_os },
 
         -- Useful status updates for LSP
-        { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
+        { 'j-hui/fidget.nvim',              tag = 'legacy',               opts = {} },
 
         -- Additional lua configuration
-        { 'folke/lazydev.nvim', ft = 'lua', enabled = true },
+        { 'folke/lazydev.nvim',             ft = 'lua',                   enabled = true },
 
         -- Python stubs for pyright and basedpyright
-        { 'microsoft/python-type-stubs', cond = false },
+        { 'microsoft/python-type-stubs',    cond = false },
     },
 }
