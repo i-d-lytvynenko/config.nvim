@@ -60,7 +60,7 @@ local config = function()
         -- html = { filetypes = { 'html', 'twig', 'hbs' } },
         -- cssls = {},
         -- intelephense = {},
-        marksman = {},
+        -- marksman = {},
         basedpyright = {
             basedpyright = {
                 analysis = {
