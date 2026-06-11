@@ -65,7 +65,7 @@ local config = function()
             basedpyright = {
                 analysis = {
                     ---@diagnostic disable-next-line: param-type-mismatch
-                    stubPath = vim.fs.joinpath(vim.fn.stdpath 'data', 'lazy', 'python-type-stubs', 'stubs'),
+                    -- stubPath = vim.fs.joinpath(vim.fn.stdpath 'data', 'lazy', 'python-type-stubs', 'stubs'),
                     diagnosticMode = 'openFilesOnly',
                 },
             },
