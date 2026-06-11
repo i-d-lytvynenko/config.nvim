@@ -73,13 +73,18 @@ vim.keymap.set('n', 'gx', function()
 end, { desc = 'Open URL' })
 
 -- Sessions
-local session_path = vim.fn.stdpath 'config' .. '/session/mysession.vim'
+local session_path = vim.fn.stdpath 'state' .. '/session/mysession.vim'
 function DeleteArgsAndSaveSession()
+    local session_dir = vim.fn.fnamemodify(session_path, ':p:h')
+    if vim.fn.isdirectory(session_dir) == 0 then
+        vim.fn.mkdir(session_dir)
+    end
     if #vim.fn.argv() > 0 then
         vim.cmd ':argd*'
     end
     vim.cmd(':mksession! ' .. session_path)
 end
+
 vim.keymap.set('n', '<leader>ss', ":lua DeleteArgsAndSaveSession(); print('Session saved')<CR>", opts)
 vim.keymap.set('n', '<leader>sl', ':silent! source ' .. session_path .. "<CR>:lua print('Session loaded')<CR>", opts)
 
