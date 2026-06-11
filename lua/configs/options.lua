@@ -58,7 +58,7 @@ for k, v in pairs(options) do
 end
 
 -- Change UI language
-vim.cmd 'language en_US'
+vim.cmd 'language en_US.UTF-8'
 
 -- Disable intro dashboard
 vim.opt.shortmess:append { I = true }
