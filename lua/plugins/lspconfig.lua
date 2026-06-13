@@ -93,6 +93,18 @@ local config = function()
             semanticTokens = 'disable',
         },
     }
+    if vim.fn.isdirectory('/gnu/store') == 1 then
+        vim.filetype.add({
+            extension = {
+                guile = 'scheme',
+                scm = 'scheme',
+            }
+        })
+
+        servers.guile_ls = {
+            filetypes = { 'scheme' },
+        }
+    end
 
     -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
     local capabilities = vim.lsp.protocol.make_client_capabilities()
