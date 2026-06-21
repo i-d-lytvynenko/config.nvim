@@ -5,7 +5,9 @@ return {
         vim.g.undotree_WindowLayout = 2
         vim.g.undotree_ShortIndicators = 1
         vim.g.undotree_DiffAutoOpen = 0
-        vim.g.undotree_DiffCommand = 'FC'
+        if vim.fn.has 'win32' == 1 then
+            vim.g.undotree_DiffCommand = 'FC'
+        end
         vim.g.undotree_SetFocusWhenToggle = 1
         vim.g.undotree_HelpLine = 0
         vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle, { desc = 'Toggle [U]ndotree' })
