@@ -17,7 +17,8 @@ return {
                 -- with jupytext.nvim
                 return false
             end
-            vim.keymap.set('n', '<leader>hp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
+            vim.keymap.set('n', '<leader>hp', require('gitsigns').preview_hunk,
+                { buffer = bufnr, desc = 'Preview git hunk' })
 
             -- don't override the built-in and fugitive keymaps
             local gs = package.loaded.gitsigns
@@ -39,6 +40,8 @@ return {
                 end)
                 return '<Ignore>'
             end, { expr = true, buffer = bufnr, desc = 'Jump to previous hunk' })
+            vim.keymap.set('n', '<leader>gt', function() require('gitsigns').blame_line() end,
+                { desc = 'Open/Focus floating git blame' })
         end,
     },
 }
