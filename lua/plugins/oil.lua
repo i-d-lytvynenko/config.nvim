@@ -75,6 +75,7 @@ return {
             ['~'] = { 'actions.cd', opts = { scope = 'tab', mode = 'n' } },
             ['gs'] = { 'actions.change_sort', mode = 'n' },
             ['gx'] = { 'actions.open_external' },
+            ['gy'] = { 'actions.copy_entry_path', mode = 'n' },
             ['g.'] = { 'actions.toggle_hidden', mode = 'n' },
             ['g\\'] = { 'actions.toggle_trash', mode = 'n' },
         },
