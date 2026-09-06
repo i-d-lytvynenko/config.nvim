@@ -64,13 +64,21 @@ vim.keymap.set('n', '<leader>pv', ':edit.<CR>', opts)
 
 -- Open URL without netrw
 vim.keymap.set('n', 'gx', function()
-    local url = string.match(vim.fn.expand '<cWORD>', '(https?://[a-zA-Z0-9_/%-%.~@\\+#=?&:]+)')
+    local cword = vim.fn.expand('<cWORD>')
+    local url = string.match(cword, 'https?://[%w_/%-%.~@%+%%#=%?&:%(%),]+')
+
     if url then
-        vim.cmd('Browse ' .. url)
+        url = string.gsub(url, '[%.,;:>%\'%]]+$', '')
+
+        if vim.ui.open then
+            vim.ui.open(url)
+        else
+            vim.notify('vim.ui.open requires Neovim 0.10+', vim.log.levels.ERROR)
+        end
     else
-        print 'No https or http URI found on line'
+        print('No HTTP or HTTPS URI found under cursor')
     end
-end, { desc = 'Open URL' })
+end, { desc = 'Open URL under cursor' })
 
 -- Sessions
 local session_path = vim.fn.stdpath 'state' .. '/session/mysession.vim'
