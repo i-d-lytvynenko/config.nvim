@@ -10,10 +10,27 @@ local config = function()
     }
 
     if vim.fn.isdirectory('/gnu/store') == 1 then
-        formatters_by_ft.scheme = { 'guix_style' }
-        formatters.guix_style = {
-            command = 'guix',
-            args = { 'style', '-f', '$FILENAME' },
+        -- If you don't want to install the "emacs-minimal" package,
+        -- you can use this, but it resolves '\n' in the code into actual newlines:
+        -- formatters_by_ft.scheme = { 'guix_style' }
+        -- formatters.guix_style = {
+        --     command = 'guix',
+        --     args = { 'style', '-f', '$FILENAME' },
+        --     stdin = false,
+        -- }
+        formatters_by_ft.scheme = { 'emacs_scheme' }
+        formatters.emacs_scheme = {
+            command = 'emacs',
+            args = {
+                '--batch',
+                '$FILENAME',
+                '--eval',
+                '(setq make-backup-files nil)',
+                '--eval',
+                '(indent-region (point-min) (point-max))',
+                '-f',
+                'save-buffer'
+            },
             stdin = false,
         }
     end
