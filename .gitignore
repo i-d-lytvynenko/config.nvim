@@ -1,3 +1,4 @@
 session/
 lua/plugins/disabled/
 lua/configs/bookmarks.lua
+.alda-nrepl-port
