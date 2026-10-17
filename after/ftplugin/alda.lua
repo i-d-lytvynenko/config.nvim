@@ -1,5 +1,14 @@
 -- Adds descriptions to vim-alda's buffer-local mappings so they show up readably in telescope.keymaps / which-key
 
+-- Mappings defined in this file. Edit here to rebind; the plugin's own
+-- mappings for these keys get overwritten.
+local keys = {
+    hard_stop    = "<localleader>s", -- plugin default: <localleader>S
+    parse_data   = "<localleader>S", -- plugin default: <localleader>s
+    parse_events = "<localleader>E",
+    reset        = "<localleader>R",
+}
+
 local descs = {
     n = {
         ["<localleader>a"]  = "Alda: run CLI command",
@@ -88,7 +97,7 @@ vim.api.nvim_buf_create_user_command(buf, "AldaStopPlayback", hard_stop,
 -- <localleader>S would otherwise be defined after ours and overwrite it.
 vim.schedule(function()
     if vim.api.nvim_buf_is_valid(buf) then
-        vim.keymap.set("n", "<localleader>S", hard_stop,
+        vim.keymap.set("n", keys.hard_stop, hard_stop,
             { buffer = buf, desc = "Alda: hard stop (reset REPL, reload definitions)" })
     end
 end)
@@ -97,7 +106,7 @@ end)
 -- Same reset as the hard stop, but explicit and REPL-only: use it to start
 -- from a clean slate (e.g. after the part offsets have drifted apart).
 -- Without a REPL connection the plugin raises "Use AldaConnect first".
-vim.keymap.set("n", "<localleader>R", function()
+vim.keymap.set("n", keys.reset, function()
     vim.fn.jobwait({ vim.fn["alda#repl#NewScore"]() }, 5000)
     vim.fn["alda#repl#Play"](definitions())
 end, { buffer = buf, desc = "Alda: reset REPL and reload definitions" })
@@ -148,8 +157,8 @@ vim.api.nvim_buf_create_user_command(buf, "AldaParseBufferEvents", parse_events,
 -- Deferred so the plugin's own mappings (lazy-loaded) don't overwrite ours.
 vim.schedule(function()
     if not vim.api.nvim_buf_is_valid(buf) then return end
-    vim.keymap.set("n", "<localleader>s", parse_data,
+    vim.keymap.set("n", keys.parse_data, parse_data,
         { buffer = buf, desc = "Alda: parse buffer (score data)" })
-    vim.keymap.set("n", "<localleader>E", parse_events,
+    vim.keymap.set("n", keys.parse_events, parse_events,
         { buffer = buf, desc = "Alda: parse buffer (events)" })
 end)
