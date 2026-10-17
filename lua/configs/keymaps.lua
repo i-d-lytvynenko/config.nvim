@@ -37,7 +37,7 @@ vim.keymap.set({ 'i', 'v' }, '<A-q>', '<Esc>:bdelete!<CR>zz', opts)
 vim.keymap.set('n', '<Leader>n', ':enew<CR>', opts)
 
 -- Terminal
-vim.keymap.set('n', '<leader>t', ':terminal<CR>i', opts)
+vim.keymap.set('n', '<leader>t', '<cmd>terminal nu<CR>i', opts)
 vim.keymap.set('t', '<A-q>', '<C-\\><C-n>:bdelete!<CR>', opts)
 vim.keymap.set('t', '<C-[>', '<C-\\><C-n>', opts)
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', opts)
