@@ -62,6 +62,10 @@ return {
             local function map(mode, l, r, opts)
                 opts = opts or {}
                 opts.buffer = bufnr
+
+                if opts.desc then
+                    opts.desc = '<Gitsigns>: ' .. opts.desc
+                end
                 vim.keymap.set(mode, l, r, opts)
             end
 
@@ -72,7 +76,7 @@ return {
                 else
                     gitsigns.nav_hunk('next')
                 end
-            end)
+            end, { desc = 'Next hunk' })
 
             map('n', '[c', function()
                 if vim.wo.diff then
@@ -80,41 +84,41 @@ return {
                 else
                     gitsigns.nav_hunk('prev')
                 end
-            end)
+            end, { desc = 'Prev hunk' })
 
             -- Actions
-            map('n', '<leader>hs', gitsigns.stage_hunk)
-            map('n', '<leader>hr', gitsigns.reset_hunk)
+            map('n', '<leader>hs', gitsigns.stage_hunk, { desc = '[S]tage hunk' })
+            map('n', '<leader>hr', gitsigns.reset_hunk, { desc = '[R]eset hunk' })
 
             map('v', '<leader>hs', function()
                 gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-            end)
+            end, { desc = '[S]tage hunk' })
 
             map('v', '<leader>hr', function()
                 gitsigns.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-            end)
+            end, { desc = '[R]eset hunk' })
 
-            -- map('n', '<leader>hS', gitsigns.stage_buffer)
-            -- map('n', '<leader>hR', gitsigns.reset_buffer)
-            map('n', '<leader>hp', gitsigns.preview_hunk)
-            -- map('n', '<leader>hi', gitsigns.preview_hunk_inline)
+            -- map('n', '<leader>hS', gitsigns.stage_buffer, {desc = '[S]tage buffer'})
+            -- map('n', '<leader>hR', gitsigns.reset_buffer, {desc = '[R]eset buffer'})
+            map('n', '<leader>hp', gitsigns.preview_hunk, { desc = '[P]review hunk' })
+            -- map('n', '<leader>hi', gitsigns.preview_hunk_inline, {desc = 'Preview hunk [I]nline'})
 
             vim.keymap.set('n', '<leader>hb', function()
                 gitsigns.blame_line({ full = false })
-            end)
+            end, { desc = '[B]lame line' })
 
-            map('n', '<leader>hd', gitsigns.diffthis)
+            map('n', '<leader>hd', gitsigns.diffthis, { desc = '[D]iff side-by-side' })
 
             -- map('n', '<leader>hD', function()
             --     gitsigns.diffthis('~')
-            -- end)
+            -- end, {desc = '[D]iff side-by-side from last commit'})
 
-            -- map('n', '<leader>hQ', function() gitsigns.setqflist('all') end)
-            -- map('n', '<leader>hq', gitsigns.setqflist)
+            -- map('n', '<leader>hQ', function() gitsigns.setqflist('all') end, {desc = 'Populate [Q]uickfix list (???)'})
+            -- map('n', '<leader>hq', gitsigns.setqflist, {desc = 'Populate [Q]uickfix list'})
 
             -- Toggles
-            -- map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
-            -- map('n', '<leader>tw', gitsigns.toggle_word_diff)
+            -- map('n', '<leader>tb', gitsigns.toggle_current_line_blame, {desc = '[T]oggle git [B]lame'})
+            -- map('n', '<leader>tw', gitsigns.toggle_word_diff, {desc = '[T]oggle [W]ord diff'})
 
             -- Text object
             -- map({ 'o', 'x' }, 'ih', gitsigns.select_hunk)
