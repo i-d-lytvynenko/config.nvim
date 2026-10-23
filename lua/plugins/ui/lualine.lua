@@ -6,6 +6,12 @@ local config = function()
     end
 
     local utils = require 'utils'
+    vim.api.nvim_create_autocmd('User', {
+        pattern = 'GitSignsUpdate',
+        callback = function()
+            lualine.refresh { place = { 'statusline' } }
+        end,
+    })
 
     lualine.setup {
         options = {
@@ -112,7 +118,16 @@ local config = function()
                         removed = 'GitSignsDelete',
                     },
                     symbols = { added = '+', modified = '~', removed = '-' }, -- Changes the symbols used by the diff.
-                    source = nil,                                             -- A function that works as a data source for diff.
+                    source = function()
+                        local gs = vim.b.gitsigns_status_dict
+                        if gs then
+                            return {
+                                added = gs.added,
+                                modified = gs.changed,
+                                removed = gs.removed,
+                            }
+                        end
+                    end,
                     -- It must return a table as such:
                     --     { added = add_count, modified = modified_count, removed = removed_count }
                     -- or nil on failure. count <= 0 won"t be displayed.
