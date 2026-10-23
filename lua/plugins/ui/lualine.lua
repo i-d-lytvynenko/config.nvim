@@ -10,19 +10,47 @@ local config = function()
     lualine.setup {
         options = {
             icons_enabled = false,
+            -- component_separators = { left = '', right = '' },
             component_separators = '',
+            -- section_separators = { left = '', right = '' },
             section_separators = '',
+            theme = 'auto',
+            disabled_filetypes = {
+                statusline = {},
+                winbar = {},
+            },
+            ignore_focus = {},
+            always_divide_middle = true,
+            always_show_tabline = false,
+            globalstatus = true,
+            refresh = {
+                statusline = 1000,
+                tabline = 1000,
+                winbar = 1000,
+                refresh_time = 16, -- ~60fps
+                events = {
+                    'WinEnter',
+                    'BufEnter',
+                    'BufWritePost',
+                    'SessionLoadPost',
+                    'FileChangedShellPost',
+                    'VimResized',
+                    'Filetype',
+                    'CursorMoved',
+                    'CursorMovedI',
+                    'ModeChanged',
+                },
+            }
         },
-
         sections = {
-            lualine_a = { 'mode' },
-            lualine_b = {
+            lualine_a = {
+                'mode',
                 {
                     'buffers',
-                    show_filename_only = true, -- Shows shortened relative path when set to false.
+                    show_filename_only = true,       -- Shows shortened relative path when set to false.
                     hide_filename_extension = false, -- Hide filename extension when set to true.
-                    show_modified_status = true, -- Shows indicator when the buffer is modified.
-                    mode = 0, -- 0: Shows buffer name
+                    show_modified_status = true,     -- Shows indicator when the buffer is modified.
+                    mode = 0,                        -- 0: Shows buffer name
                     filetype_names = {
                         TelescopePrompt = 'Telescope',
                         dashboard = 'Dashboard',
@@ -42,37 +70,11 @@ local config = function()
                     fmt = utils.shorten_filename,
                 },
             },
-            lualine_c = {},
-            lualine_x = {
-                'diagnostics',
-                {
-                    'diff',
-                    icons_enabled = true,
-                    colored = true, -- Displays a colored diff status if set to true
-                    diff_color = {
-                        -- Same color values as the general color option can be used here.
-                        added = 'LuaLineDiffAdd', -- Changes the diff"s added color
-                        modified = 'LuaLineDiffChange', -- Changes the diff"s modified color
-                        removed = 'LuaLineDiffDelete', -- Changes the diff"s removed color you
-                    },
-                    symbols = { added = '+', modified = '~', removed = '-' }, -- Changes the symbols used by the diff.
-                    source = nil, -- A function that works as a data source for diff.
-                    -- It must return a table as such:
-                    --     { added = add_count, modified = modified_count, removed = removed_count }
-                    -- or nil on failure. count <= 0 won"t be displayed.
-                },
-                {
-                    'branch',
-                    icons_enabled = true,
-                    icon = {
-                        '',
-                        color = {
-                            fg = 'white',
-                        },
-                    },
-                },
+            lualine_b = {
             },
-            lualine_y = {
+            lualine_c = {
+            },
+            lualine_x = {
                 {
                     function(opts)
                         opts = opts or {}
@@ -90,8 +92,31 @@ local config = function()
                     end,
                     color = 'StatusLine',
                 },
+                {
+                    'branch',
+                    icons_enabled = true,
+                    icon = { '' },
+                },
+            },
+            lualine_y = {
                 -- 'encoding',
                 -- 'filetype',
+                'diagnostics',
+                {
+                    'diff',
+                    icons_enabled = true,
+                    colored = true, -- Displays a colored diff status if set to true
+                    diff_color = {
+                        added = 'GitSignsAdd',
+                        modified = 'GitSignsChange',
+                        removed = 'GitSignsDelete',
+                    },
+                    symbols = { added = '+', modified = '~', removed = '-' }, -- Changes the symbols used by the diff.
+                    source = nil,                                             -- A function that works as a data source for diff.
+                    -- It must return a table as such:
+                    --     { added = add_count, modified = modified_count, removed = removed_count }
+                    -- or nil on failure. count <= 0 won"t be displayed.
+                },
             },
             lualine_z = { 'progress' },
         },
