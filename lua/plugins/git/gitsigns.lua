@@ -124,4 +124,20 @@ return {
             -- map({ 'o', 'x' }, 'ih', gitsigns.select_hunk)
         end,
     },
+    config = function(_, opts)
+        require('gitsigns').setup(opts)
+
+        -- Enable soft wrap in the hunk preview popup and resize it to fit
+        local popup = require('gitsigns.popup')
+        local orig_create = popup.create
+        popup.create = function(lines_spec, popup_opts, id)
+            local winid, bufnr = orig_create(lines_spec, popup_opts, id)
+            if id == 'hunk' then
+                vim.wo[winid].wrap = true
+                vim.wo[winid].linebreak = true
+                popup.update(winid, bufnr, lines_spec, popup_opts)
+            end
+            return winid, bufnr
+        end
+    end,
 }
