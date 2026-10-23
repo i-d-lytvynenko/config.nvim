@@ -15,7 +15,7 @@ local config = function()
 
     lualine.setup {
         options = {
-            icons_enabled = false,
+            icons_enabled = true,
             -- component_separators = { left = '', right = '' },
             component_separators = '',
             -- section_separators = { left = '', right = '' },
@@ -27,7 +27,7 @@ local config = function()
             },
             ignore_focus = {},
             always_divide_middle = true,
-            always_show_tabline = false,
+            always_show_tabline = true,
             globalstatus = true,
             refresh = {
                 statusline = 1000,
@@ -51,36 +51,8 @@ local config = function()
         sections = {
             lualine_a = {
                 'mode',
-                {
-                    'buffers',
-                    show_filename_only = true,       -- Shows shortened relative path when set to false.
-                    hide_filename_extension = false, -- Hide filename extension when set to true.
-                    show_modified_status = true,     -- Shows indicator when the buffer is modified.
-                    mode = 0,                        -- 0: Shows buffer name
-                    filetype_names = {
-                        TelescopePrompt = 'Telescope',
-                        dashboard = 'Dashboard',
-                        fzf = 'FZF',
-                        alpha = 'Alpha',
-                        NvimTree = 'NvimTree',
-                        Term = 'Term',
-                        oil = 'Oil',
-                        iron = 'REPL',
-                    }, -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
-                    use_mode_colors = true,
-                    symbols = {
-                        modified = ' ●',
-                        alternate_file = false,
-                        directory = '',
-                    },
-                    fmt = utils.shorten_filename,
-                },
             },
             lualine_b = {
-            },
-            lualine_c = {
-            },
-            lualine_x = {
                 {
                     function(opts)
                         opts = opts or {}
@@ -98,6 +70,10 @@ local config = function()
                     end,
                     color = 'StatusLine',
                 },
+            },
+            lualine_c = {
+            },
+            lualine_x = {
                 {
                     'branch',
                     icons_enabled = true,
@@ -134,6 +110,36 @@ local config = function()
                 },
             },
             lualine_z = { 'progress' },
+        },
+        tabline = {
+            lualine_a = {
+                {
+                    'buffers',
+                    show_filename_only = true,      -- Shows shortened relative path when set to false.
+                    hide_filename_extension = true, -- Hide filename extension when set to true.
+                    show_modified_status = true,    -- Shows indicator when the buffer is modified.
+                    max_length = vim.o.columns,
+                    mode = 0,                       -- 0: Shows buffer name
+                    filetype_names = {
+                        TelescopePrompt = 'Telescope',
+                        dashboard = 'Dashboard',
+                        fzf = 'FZF',
+                        alpha = 'Alpha',
+                        NvimTree = 'NvimTree',
+                        Term = 'Term',
+                        oil = 'Oil',
+                        iron = 'REPL',
+                    },                      -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
+                    use_mode_colors = true, -- Automatically updates active buffer color to match color of other components
+                    symbols = {
+                        modified = ' ●',
+                        alternate_file = false,
+                        directory = '',
+                    },
+                    fmt = utils.shorten_filename,
+                },
+            },
+            lualine_z = {},
         },
         extensions = {
             'oil',
