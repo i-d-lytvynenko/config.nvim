@@ -1,4 +1,7 @@
--- Adds descriptions to vim-alda's buffer-local mappings so they show up readably in telescope.keymaps / which-key
+-- Support for kebab-case
+vim.opt_local.iskeyword:append('-')
+
+-- Add descriptions to vim-alda's buffer-local mappings so they show up readably in telescope.keymaps / which-key
 
 -- Mappings defined in this file. Edit here to rebind; the plugin's own
 -- mappings for these keys get overwritten.
