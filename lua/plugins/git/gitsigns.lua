@@ -2,7 +2,6 @@
 return {
     'lewis6991/gitsigns.nvim',
     event = 'VimEnter',
-    tag = 'v1.0.2', -- Last commit in main has diff symbols not disappearing after commit
     opts = {
         signs = {
             add = { text = '+' },
