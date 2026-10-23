@@ -97,21 +97,20 @@ return {
             -- map('n', '<leader>hS', gitsigns.stage_buffer)
             -- map('n', '<leader>hR', gitsigns.reset_buffer)
             map('n', '<leader>hp', gitsigns.preview_hunk)
-            map('n', '<leader>hi', gitsigns.preview_hunk_inline)
+            -- map('n', '<leader>hi', gitsigns.preview_hunk_inline)
 
-            vim.keymap.set('n', '<leader>gt', function()
-                gitsigns.blame_line({ full = true })
-            end
-            )
+            vim.keymap.set('n', '<leader>hb', function()
+                gitsigns.blame_line({ full = false })
+            end)
 
             map('n', '<leader>hd', gitsigns.diffthis)
 
-            map('n', '<leader>hD', function()
-                gitsigns.diffthis('~')
-            end)
+            -- map('n', '<leader>hD', function()
+            --     gitsigns.diffthis('~')
+            -- end)
 
-            map('n', '<leader>hQ', function() gitsigns.setqflist('all') end)
-            map('n', '<leader>hq', gitsigns.setqflist)
+            -- map('n', '<leader>hQ', function() gitsigns.setqflist('all') end)
+            -- map('n', '<leader>hq', gitsigns.setqflist)
 
             -- Toggles
             -- map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
