@@ -103,7 +103,7 @@ return {
             map('n', '<leader>hp', gitsigns.preview_hunk, { desc = '[P]review hunk' })
             -- map('n', '<leader>hi', gitsigns.preview_hunk_inline, {desc = 'Preview hunk [I]nline'})
 
-            vim.keymap.set('n', '<leader>hb', function()
+            map('n', '<leader>hb', function()
                 gitsigns.blame_line({ full = false })
             end, { desc = '[B]lame line' })
 
