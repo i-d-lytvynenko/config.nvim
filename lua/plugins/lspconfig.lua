@@ -158,7 +158,7 @@ local config = function()
             -- See https://github.com/astral-sh/ruff/issues/8232
             vim.keymap.set({ 'n', 'v' }, '<leader>f', function(_)
                 vim.lsp.buf.format()
-                client.request(vim.lsp.protocol.Methods.workspace_executeCommand, {
+                client:request(vim.lsp.protocol.Methods.workspace_executeCommand, {
                     command = 'ruff.applyOrganizeImports',
                     arguments = {
                         { uri = vim.uri_from_bufnr(bufnr), version = 0 },
