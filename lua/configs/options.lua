@@ -95,7 +95,19 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- vim.cmd [[autocmd TermOpen * call chansend(b:terminal_job_id, "D:/projects/utils/buffer-fix/change_max_buffers.exe\r")]]
 
 -- Enable soft wrapping for chosen filetypes
-vim.cmd [[autocmd FileType markdown,text,org,plaintex,html,xml,mermaid,typst setlocal wrap]]
+local wrap_filetypes = { 'markdown', 'text', 'org', 'plaintex', 'html', 'xml', 'mermaid', 'typst' }
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = wrap_filetypes,
+    command = 'setlocal wrap',
+})
+-- Plugins like gitsigns set the filetype of a buffer before it is shown in any window, so the FileType `setlocal` misses its window
+vim.api.nvim_create_autocmd('BufWinEnter', {
+    callback = function()
+        if vim.tbl_contains(wrap_filetypes, vim.bo.filetype) then
+            vim.opt_local.wrap = true
+        end
+    end,
+})
 
 -- Diff mode leaves wrap at whatever it already was
 vim.opt.diffopt:append('followwrap')
