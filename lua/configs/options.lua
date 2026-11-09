@@ -91,9 +91,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     pattern = '*',
 })
 
--- Fix command history for poetry venv
--- vim.cmd [[autocmd TermOpen * call chansend(b:terminal_job_id, "D:/projects/utils/buffer-fix/change_max_buffers.exe\r")]]
-
 -- Enable soft wrapping for chosen filetypes
 local wrap_filetypes = { 'markdown', 'text', 'org', 'plaintex', 'html', 'xml', 'mermaid', 'typst' }
 vim.api.nvim_create_autocmd('FileType', {
