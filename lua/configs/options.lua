@@ -99,9 +99,13 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 -- Plugins like gitsigns set the filetype of a buffer before it is shown in any window, so the FileType `setlocal` misses its window
 vim.api.nvim_create_autocmd('BufWinEnter', {
-    callback = function()
-        if vim.tbl_contains(wrap_filetypes, vim.bo.filetype) then
+    callback = function(args)
+        if vim.b[args.buf].wrap_default_applied then
+            return
+        end
+        if vim.tbl_contains(wrap_filetypes, vim.bo[args.buf].filetype) then
             vim.opt_local.wrap = true
+            vim.b[args.buf].wrap_default_applied = true
         end
     end,
 })
