@@ -74,5 +74,48 @@ return {
             -- disable_keymaps: disable default keymaps
             disable_keymaps = false,
         }
+
+        -- Illuminate only highlights within the current buffer;
+        -- mirror the word under the cursor into all other windows of the tab via window-local matches
+        local match_ids = {} -- winid -> match id
+
+        local function clear_matches()
+            for win, id in pairs(match_ids) do
+                if vim.api.nvim_win_is_valid(win) then
+                    pcall(vim.fn.matchdelete, id, win)
+                end
+            end
+            match_ids = {}
+        end
+
+        vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI', 'WinEnter', 'BufEnter' }, {
+            group = vim.api.nvim_create_augroup('illuminate_other_windows', { clear = true }),
+            callback = function()
+                clear_matches()
+                -- <cword> falls forward to the next word when the cursor isn't on a keyword char
+                local col = vim.api.nvim_win_get_cursor(0)[2]
+                local char = vim.api.nvim_get_current_line():sub(col + 1, col + 1)
+                if char == '' or vim.fn.match(char, '\\k') ~= 0 then
+                    return
+                end
+                local word = vim.fn.expand('<cword>')
+                if not word:match('^[%w_]+$') then
+                    return
+                end
+                local pattern = '\\V\\<' .. word .. '\\>'
+                local cur_win = vim.api.nvim_get_current_win()
+                local cur_buf = vim.api.nvim_get_current_buf()
+                for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+                    -- skip the current window, floats, and windows on the same buffer (illuminate covers those)
+                    if
+                        win ~= cur_win
+                        and vim.api.nvim_win_get_buf(win) ~= cur_buf
+                        and vim.api.nvim_win_get_config(win).relative == ''
+                    then
+                        match_ids[win] = vim.fn.matchadd('IlluminatedWordText', pattern, 10, -1, { window = win })
+                    end
+                end
+            end,
+        })
     end,
 }
